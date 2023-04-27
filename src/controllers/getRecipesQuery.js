@@ -5,7 +5,6 @@ const { Recipe, Diet } = require("../db");
 const { Op } = require("sequelize");
 
 const getRecipeByQuery = async (title) => {
-  console.log("entro");
   const recipeBdd = await Recipe.findAll({
     where: {
       title: {
@@ -20,7 +19,7 @@ const getRecipeByQuery = async (title) => {
       },
     },
   });
-
+  
   const recipeBddMaped = recipeBdd.map((recipe) => recipe.dataValues);
   const recipeBddWithDiets = recipeBddMaped.map((recipe) => {
     const result = {
@@ -29,16 +28,28 @@ const getRecipeByQuery = async (title) => {
     };
     return result;
   });
-
+  
   let recipeApi = await axios.get(
     `${URL_API}/recipes/complexSearch?${API_KEY}&addRecipeInformation=true&query=${title}`
-  );
+    );
+    
+    recipeApi = recipeApi.data.results;
+    const recipeMaped = recipeApi.map(recipe => {
+      return {
+        id: recipe.id,
+        title: recipe.title,
+        image: recipe.image,
+        healthscore: recipe.healthScore,
+        summary: recipe.summary,
+        instructions: recipe.instructions,
+        diets: recipe.diets,
 
-  recipeApi = recipeApi.data.results;
-
-  const results = [...recipeBddWithDiets, ...recipeApi];
-  if (results.length === 0) throw Error("Recipe not found");
-
+      }
+    })
+    console.log(recipeMaped)
+    const results = [...recipeBddWithDiets, ...recipeMaped];
+    if (results.length === 0) throw Error("Recipe not found");
+    
   return results;
 };
 
