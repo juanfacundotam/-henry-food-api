@@ -35,12 +35,8 @@ const getAllRecipes = async () => {
   });
 
 
-  let response = await axios.get(
-    "https://run.mocky.io/v3/84b3f19c-7642-4552-b69c-c53742badee5"
-  );
-  // let response = await axios.get(
-  //   `${URL_API}/recipes/complexSearch?${API_KEY}&addRecipeInformation=true`
-  // );
+  // let response = await axios.get("https://run.mocky.io/v3/84b3f19c-7642-4552-b69c-c53742badee5");
+  let response = await axios.get(`${URL_API}/recipes/complexSearch?${API_KEY}&addRecipeInformation=true`);
   const allRecipes = response.data.results.map((recipe) => {
     return {
       id: recipe.id,
